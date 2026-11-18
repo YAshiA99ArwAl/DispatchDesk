@@ -72,51 +72,56 @@ The user interface follows a modern SaaS design language utilizing a pastel colo
 
 ```text
 DispatchDesk/
-├── pom.xml
+├── pom.xml                                            # Multi-module Maven parent POM
 ├── README.md
 ├── run.bat
-├── data/
-│   └── dispatchdesk.db
-└── src/
-    ├── main/
-    │   ├── java/com/dispatchdesk/
-    │   │   ├── Main.java                            # Application bootstrap & entry point
-    │   │   ├── api/
-    │   │   │   └── BackendApiServer.java            # Embedded JDK HttpServer REST API
-    │   │   ├── db/
-    │   │   │   └── Database.java                    # SQLite connection & schema migrations
-    │   │   ├── model/
-    │   │   │   ├── AreaStat.java                    # Area fulfillment statistics DTO
-    │   │   │   ├── AssignmentRecord.java            # Assignment record DTO
-    │   │   │   ├── AssignmentResult.java            # Smart-assign response DTO
-    │   │   │   ├── DashboardStats.java              # Dashboard KPI counts DTO
-    │   │   │   ├── DriverRecord.java                # Driver record DTO
-    │   │   │   ├── OrderRecord.java                 # Order record DTO
-    │   │   │   ├── ReportSummary.java               # Reports summary DTO
-    │   │   │   └── UserSession.java                 # Authenticated user session DTO
-    │   │   ├── service/
-    │   │   │   └── DispatchBackend.java             # Business logic & user-scoped data access
-    │   │   └── ui/
-    │   │       ├── MainFrame.java                   # Main Swing window & navigation shell
-    │   │       ├── theme/
-    │   │       │   └── UITheme.java                 # Design tokens, colors & fonts
-    │   │       ├── components/
-    │   │       │   ├── DashboardAnalyticsPanel.java # Delivery pipeline & fleet overview widget
-    │   │       │   ├── DashboardStatCard.java       # Reusable KPI metric card
-    │   │       │   ├── ModernComponents.java        # Custom buttons, cards, inputs & tables
-    │   │       │   └── ReportsAnalyticsChart.java   # Area bar chart & success ratio gauge
-    │   │       ├── dialogs/
-    │   │       │   └── DetailsDialogs.java          # Order & assignment inspection dialogs
-    │   │       └── panels/
-    │   │           ├── AssignmentsPanel.java        # Delivery assignments view
-    │   │           ├── DashboardPanel.java          # Operational dashboard view
-    │   │           ├── DriversPanel.java            # Drivers directory view
-    │   │           ├── LoginPanel.java              # Sign In & Create ID view
-    │   │           ├── OrdersPanel.java             # Orders management view
-    │   │           └── ReportsPanel.java            # Reports & analytics view
-    │   └── resources/
-    └── test/
-        └── java/com/dispatchdesk/
+├── database/                                          # Persistence & SQLite database layer
+│   ├── pom.xml
+│   ├── dispatchdesk.db                                # Persistent SQLite database
+│   └── src/main/java/com/dispatchdesk/db/
+│       └── Database.java                              # SQLite connection & schema migrations
+├── backend/                                           # REST API, business logic & domain models
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/dispatchdesk/
+│       │   ├── api/
+│       │   │   └── BackendApiServer.java              # Embedded JDK HttpServer REST API
+│       │   ├── model/
+│       │   │   ├── AreaStat.java                      # Area fulfillment statistics DTO
+│       │   │   ├── AssignmentRecord.java              # Assignment record DTO
+│       │   │   ├── AssignmentResult.java              # Smart-assign response DTO
+│       │   │   ├── DashboardStats.java                # Dashboard KPI counts DTO
+│       │   │   ├── DriverRecord.java                  # Driver record DTO
+│       │   │   ├── OrderRecord.java                   # Order record DTO
+│       │   │   ├── ReportSummary.java                 # Reports summary DTO
+│       │   │   └── UserSession.java                   # Authenticated user session DTO
+│       │   └── service/
+│       │       └── DispatchBackend.java               # Business logic & user-scoped data access
+│       └── test/java/com/dispatchdesk/
+└── frontend/                                          # Desktop Swing UI & application entry point
+    ├── pom.xml
+    └── src/main/
+        ├── java/com/dispatchdesk/
+        │   ├── Main.java                              # Application bootstrap & entry point
+        │   └── ui/
+        │       ├── MainFrame.java                     # Main Swing window & navigation shell
+        │       ├── theme/
+        │       │   └── UITheme.java                   # Design tokens, colors & fonts
+        │       ├── components/
+        │       │   ├── DashboardAnalyticsPanel.java   # Delivery pipeline & fleet overview widget
+        │       │   ├── DashboardStatCard.java         # Reusable KPI metric card
+        │       │   ├── ModernComponents.java          # Custom buttons, cards, inputs & tables
+        │       │   └── ReportsAnalyticsChart.java     # Area bar chart & success ratio gauge
+        │       ├── dialogs/
+        │       │   └── DetailsDialogs.java            # Order & assignment inspection dialogs
+        │       └── panels/
+        │           ├── AssignmentsPanel.java          # Delivery assignments view
+        │           ├── DashboardPanel.java            # Operational dashboard view
+        │           ├── DriversPanel.java              # Drivers directory view
+        │           ├── LoginPanel.java                # Sign In & Create ID view
+        │           ├── OrdersPanel.java               # Orders management view
+        │           └── ReportsPanel.java              # Reports & analytics view
+        └── resources/
 ```
 
 ---
@@ -137,13 +142,14 @@ run.bat
 
 #### Option 2: Using Maven
 ```bash
-mvn clean compile exec:java -Dexec.mainClass="com.dispatchdesk.Main"
+mvn clean compile
+mvn -pl frontend exec:java -Dexec.mainClass="com.dispatchdesk.Main"
 ```
 
 #### Option 3: IntelliJ IDEA
 1. Open the `DispatchDesk` folder in IntelliJ IDEA.
 2. Ensure Project SDK is set to **JDK 21**.
-3. Run `Main.java` (`src/main/java/com/dispatchdesk/Main.java`).
+3. Run `Main.java` (`frontend/src/main/java/com/dispatchdesk/Main.java`).
 
 ---
 

@@ -21,21 +21,27 @@ public class Database {
             return resolvedUrl;
         }
 
+        File databaseDirDb = new File("database", "dispatchdesk.db");
+        File parentDatabaseDirDb = new File("../database", "dispatchdesk.db");
         File dataDb = new File("data", "dispatchdesk.db");
         File localDb = new File("dispatchdesk.db");
         File nestedDb = new File("DispatchDesk", "dispatchdesk.db");
-        if (dataDb.exists()) {
+        if (databaseDirDb.exists()) {
+            resolvedUrl = "jdbc:sqlite:" + databaseDirDb.getAbsolutePath();
+        } else if (parentDatabaseDirDb.exists()) {
+            resolvedUrl = "jdbc:sqlite:" + parentDatabaseDirDb.getAbsolutePath();
+        } else if (dataDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + dataDb.getAbsolutePath();
         } else if (localDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + localDb.getAbsolutePath();
         } else if (nestedDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + nestedDb.getAbsolutePath();
         } else {
-            File dataDir = dataDb.getParentFile();
-            if (dataDir != null && !dataDir.exists()) {
-                dataDir.mkdirs();
+            File dbDir = databaseDirDb.getParentFile();
+            if (dbDir != null && !dbDir.exists()) {
+                dbDir.mkdirs();
             }
-            resolvedUrl = "jdbc:sqlite:" + dataDb.getAbsolutePath();
+            resolvedUrl = "jdbc:sqlite:" + databaseDirDb.getAbsolutePath();
         }
         return resolvedUrl;
     }
