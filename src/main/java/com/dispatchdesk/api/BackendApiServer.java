@@ -1,5 +1,7 @@
-package com.dispatchdesk;
+package com.dispatchdesk.api;
 
+import com.dispatchdesk.model.*;
+import com.dispatchdesk.service.DispatchBackend;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * Lightweight built-in REST API backend server powered by JDK 21 HttpServer.
- * Exposes JSON endpoints connected directly to DispatchBackend & SQLite (dispatchdesk.db)
+ * Exposes JSON endpoints connected directly to DispatchBackend & SQLite (data/dispatchdesk.db)
  * with per-user data isolation via userId / X-User-Id.
  */
 public class BackendApiServer {
@@ -100,7 +102,7 @@ public class BackendApiServer {
             return;
         }
         Map<String, String> body = parseSimpleJson(readBody(ex));
-        DispatchBackend.UserSession session = DispatchBackend.login(body.get("username"), body.get("password"));
+        UserSession session = DispatchBackend.login(body.get("username"), body.get("password"));
         if (session == null) {
             sendJson(ex, 401, "{\"error\":\"Invalid username or password\"}");
             return;
@@ -129,7 +131,7 @@ public class BackendApiServer {
             sendJson(ex, 409, "{\"error\":\"Username already exists\"}");
             return;
         }
-        DispatchBackend.UserSession session = DispatchBackend.register(username, password, fullName, role);
+        UserSession session = DispatchBackend.register(username, password, fullName, role);
         if (session == null) {
             sendJson(ex, 500, "{\"error\":\"Could not register user\"}");
             return;
@@ -145,7 +147,7 @@ public class BackendApiServer {
             return;
         }
         try {
-            DispatchBackend.DashboardStats s = DispatchBackend.getDashboardStats(userId);
+            DashboardStats s = DispatchBackend.getDashboardStats(userId);
             String json = "{"
                     + "\"userId\":" + userId + ","
                     + "\"totalOrders\":" + s.totalOrders + ","
@@ -173,10 +175,10 @@ public class BackendApiServer {
                     sendJson(ex, 400, "{\"error\":\"Missing or invalid userId\"}");
                     return;
                 }
-                List<DispatchBackend.DriverRecord> drivers = DispatchBackend.getDrivers(userId);
+                List<DriverRecord> drivers = DispatchBackend.getDrivers(userId);
                 StringBuilder sb = new StringBuilder("[");
                 for (int i = 0; i < drivers.size(); i++) {
-                    DispatchBackend.DriverRecord d = drivers.get(i);
+                    DriverRecord d = drivers.get(i);
                     if (i > 0) sb.append(",");
                     sb.append("{")
                             .append("\"driverId\":").append(d.driverId).append(",")
@@ -216,10 +218,10 @@ public class BackendApiServer {
                     sendJson(ex, 400, "{\"error\":\"Missing or invalid userId\"}");
                     return;
                 }
-                List<DispatchBackend.OrderRecord> orders = DispatchBackend.getOrders(userId);
+                List<OrderRecord> orders = DispatchBackend.getOrders(userId);
                 StringBuilder sb = new StringBuilder("[");
                 for (int i = 0; i < orders.size(); i++) {
-                    DispatchBackend.OrderRecord o = orders.get(i);
+                    OrderRecord o = orders.get(i);
                     if (i > 0) sb.append(",");
                     sb.append("{")
                             .append("\"orderId\":").append(o.orderId).append(",")
@@ -267,10 +269,10 @@ public class BackendApiServer {
             return;
         }
         try {
-            List<DispatchBackend.AssignmentRecord> list = DispatchBackend.getAssignments(userId);
+            List<AssignmentRecord> list = DispatchBackend.getAssignments(userId);
             StringBuilder sb = new StringBuilder("[");
             for (int i = 0; i < list.size(); i++) {
-                DispatchBackend.AssignmentRecord a = list.get(i);
+                AssignmentRecord a = list.get(i);
                 if (i > 0) sb.append(",");
                 sb.append("{")
                         .append("\"assignmentId\":").append(a.assignmentId).append(",")
@@ -298,7 +300,7 @@ public class BackendApiServer {
             return;
         }
         try {
-            DispatchBackend.ReportSummary r = DispatchBackend.getReportSummary(userId);
+            ReportSummary r = DispatchBackend.getReportSummary(userId);
             StringBuilder sb = new StringBuilder("{");
             sb.append("\"userId\":").append(userId).append(",");
             sb.append("\"totalOrders\":").append(r.totalOrders).append(",");
@@ -307,7 +309,7 @@ public class BackendApiServer {
             sb.append("\"successRate\":").append(String.format(java.util.Locale.US, "%.1f", r.successRate)).append(",");
             sb.append("\"areas\":[");
             for (int i = 0; i < r.areaStats.size(); i++) {
-                ReportsAnalyticsChart.AreaStat a = r.areaStats.get(i);
+                AreaStat a = r.areaStats.get(i);
                 if (i > 0) sb.append(",");
                 sb.append("{")
                         .append("\"area\":\"").append(escapeJson(a.area)).append("\",")
@@ -391,7 +393,7 @@ public class BackendApiServer {
         return map;
     }
 
-    private static String userSessionToJson(DispatchBackend.UserSession s) {
+    private static String userSessionToJson(UserSession s) {
         return "{"
                 + "\"userId\":" + s.userId + ","
                 + "\"username\":\"" + escapeJson(s.username) + "\","

@@ -1,4 +1,4 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.theme;
 
 import java.awt.*;
 

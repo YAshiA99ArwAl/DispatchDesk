@@ -1,4 +1,6 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.components;
+
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,7 +60,6 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         g2.setColor(UITheme.PRIMARY_DARK);
         g2.drawString("Delivery Pipeline & Fleet Overview", startX, currentY);
 
-        // Live Status Badge on the right
         String liveBadge = "● Live Dispatch Sync";
         g2.setFont(new Font("Segoe UI", Font.BOLD, 11));
         FontMetrics fm = g2.getFontMetrics();
@@ -66,7 +67,7 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         int badgeX = startX + w - badgeW;
         int badgeY = currentY - 14;
 
-        g2.setColor(new Color(232, 240, 254)); // Soft light blue
+        g2.setColor(new Color(232, 240, 254));
         g2.fill(new RoundRectangle2D.Float(badgeX, badgeY, badgeW, 22, 11, 11));
         g2.setColor(new Color(26, 86, 219));
         g2.drawString(liveBadge, badgeX + 10, badgeY + 15);
@@ -84,42 +85,36 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         int barHeight = 16;
         int arc = 8;
 
-        // Background track (#F4EEFF)
         g2.setColor(UITheme.BG_CANVAS);
         g2.fill(new RoundRectangle2D.Float(startX, currentY, w, barHeight, arc, arc));
 
         if (totalOrders > 0) {
             float xOffset = startX;
 
-            // Segment 1: Delivered (Navy #424874)
             if (delivered > 0) {
                 float segW = ((float) delivered / totalOrders) * w;
                 g2.setColor(UITheme.PIPELINE_DELIVERED);
                 g2.fill(new RoundRectangle2D.Float(xOffset, currentY, segW, barHeight, arc, arc));
                 xOffset += segW;
             }
-            // Segment 2: In Progress (Slate #68709E)
             if (inProgress > 0) {
                 float segW = ((float) inProgress / totalOrders) * w;
                 g2.setColor(UITheme.PIPELINE_PROGRESS);
                 g2.fill(new RoundRectangle2D.Float(xOffset, currentY, segW, barHeight, arc, arc));
                 xOffset += segW;
             }
-            // Segment 3: Assigned (Periwinkle #A6B1E1)
             if (assigned > 0) {
                 float segW = ((float) assigned / totalOrders) * w;
                 g2.setColor(UITheme.PIPELINE_ASSIGNED);
                 g2.fill(new RoundRectangle2D.Float(xOffset, currentY, segW, barHeight, arc, arc));
                 xOffset += segW;
             }
-            // Segment 4: Pending (Soft Lilac #DCD6F7)
             if (pending > 0) {
                 float segW = ((float) pending / totalOrders) * w;
                 g2.setColor(UITheme.PIPELINE_PENDING);
                 g2.fill(new RoundRectangle2D.Float(xOffset, currentY, segW, barHeight, arc, arc));
                 xOffset += segW;
             }
-            // Segment 5: Failed (Muted Dusty Mauve #B8A1B5)
             if (failed > 0) {
                 float segW = ((float) failed / totalOrders) * w;
                 g2.setColor(UITheme.PIPELINE_FAILED);
@@ -128,7 +123,7 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         }
 
         // ==========================================
-        // 3. 5 DETAILED STAGE CARDS / TILES (Inspired by Design 2 & 4)
+        // 3. 5 DETAILED STAGE CARDS / TILES
         // ==========================================
         currentY += barHeight + 16;
         int tileGap = 12;
@@ -162,7 +157,6 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         g2.setColor(UITheme.PRIMARY_DARK);
         g2.drawString("Fleet Capacity & Driver Allocation", startX, currentY);
 
-        // Percentage Badge
         int percentAvailable = totalDrivers > 0 ? (int) Math.round((availableDrivers * 100.0) / totalDrivers) : 0;
         String pctStr = percentAvailable + "% Available (" + availableDrivers + " of " + totalDrivers + " on standby)";
         g2.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -170,7 +164,6 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         g2.setColor(UITheme.PRIMARY_DARK);
         g2.drawString(pctStr, startX + w - fm.stringWidth(pctStr), currentY);
 
-        // Fleet Progress Bar
         currentY += 12;
         int fleetBarH = 10;
         g2.setColor(UITheme.BG_CANVAS);
@@ -182,7 +175,6 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
             g2.fill(new RoundRectangle2D.Float(startX, currentY, availW, fleetBarH, 6, 6));
         }
 
-        // Fleet Allocation Pills
         currentY += fleetBarH + 14;
         int pillX = startX;
         int busyDrivers = Math.max(0, totalDrivers - availableDrivers);
@@ -208,14 +200,12 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
 
     private void drawStageTile(Graphics2D g2, int x, int y, int width, int height,
                                String stageName, int count, int total, Color dotColor, Color bg) {
-        // Tile Background
         g2.setColor(bg);
         g2.fill(new RoundRectangle2D.Float(x, y, width, height, 10, 10));
         g2.setColor(new Color(230, 226, 244));
         g2.setStroke(new BasicStroke(1.0f));
         g2.draw(new RoundRectangle2D.Float(x, y, width, height, 10, 10));
 
-        // Status Dot & Name
         g2.setColor(dotColor);
         g2.fillOval(x + 10, y + 10, 8, 8);
 
@@ -223,12 +213,10 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         g2.setColor(UITheme.TEXT_SECONDARY);
         g2.drawString(stageName, x + 22, y + 18);
 
-        // Count (Large typography)
         g2.setFont(new Font("Segoe UI", Font.BOLD, 17));
         g2.setColor(UITheme.PRIMARY_DARK);
         g2.drawString(String.valueOf(count), x + 10, y + 44);
 
-        // Percentage of total
         int pct = total > 0 ? (int) Math.round((count * 100.0) / total) : 0;
         String pctStr = pct + "%";
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -263,7 +251,6 @@ public class DashboardAnalyticsPanel extends ModernComponents.RoundedCard {
         g2.setStroke(new BasicStroke(0.8f));
         g2.draw(new RoundRectangle2D.Float(x, y - fm.getAscent() - padH, boxW, boxH, 8, 8));
 
-        // Draw antialiased vector checkmark
         g2.setColor(fgColor);
         g2.setStroke(new BasicStroke(1.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         int checkX = x + padW;

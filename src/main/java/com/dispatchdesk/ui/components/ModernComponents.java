@@ -1,4 +1,6 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.components;
+
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -262,11 +264,9 @@ public class ModernComponents {
             int h = getHeight();
 
             if (active) {
-                // Active pill matching Image 1 & Image 4
                 g2.setColor(UITheme.ACCENT_LAVENDER);
                 g2.fill(new RoundRectangle2D.Float(2, 2, w - 4, h - 4, 12, 12));
 
-                // Left active accent bar
                 g2.setColor(UITheme.PRIMARY_DARK);
                 g2.fill(new RoundRectangle2D.Float(4, 10, 4, h - 20, 4, 4));
             } else if (isHovered) {
@@ -274,7 +274,7 @@ public class ModernComponents {
                 g2.fill(new RoundRectangle2D.Float(2, 2, w - 4, h - 4, 12, 12));
             }
 
-            // Draw Vector Icon (No unicode missing glyph boxes!)
+            // Draw Vector Icon
             Color iconColor = active ? UITheme.PRIMARY_DARK : UITheme.TEXT_SECONDARY;
             drawVectorIcon(g2, 18, (h - 16) / 2, iconColor);
 
@@ -294,25 +294,21 @@ public class ModernComponents {
 
             switch (iconType) {
                 case DASHBOARD -> {
-                    // 2x2 grid squares
                     g2.fillRoundRect(x, y, 6, 6, 2, 2);
                     g2.fillRoundRect(x + 8, y, 6, 6, 2, 2);
                     g2.fillRoundRect(x, y + 8, 6, 6, 2, 2);
                     g2.fillRoundRect(x + 8, y + 8, 6, 6, 2, 2);
                 }
                 case ORDERS -> {
-                    // Delivery Package box
                     g2.drawRoundRect(x, y + 2, 14, 12, 2, 2);
                     g2.drawLine(x, y + 6, x + 14, y + 6);
                     g2.drawLine(x + 7, y + 6, x + 7, y + 14);
                 }
                 case DRIVERS -> {
-                    // Driver User silhouette
                     g2.drawOval(x + 3, y, 8, 8);
                     g2.drawArc(x, y + 7, 14, 10, 0, 180);
                 }
                 case ASSIGNMENTS -> {
-                    // Transfer arrows ⇄
                     g2.drawLine(x, y + 4, x + 12, y + 4);
                     g2.drawLine(x + 9, y + 1, x + 12, y + 4);
                     g2.drawLine(x + 9, y + 7, x + 12, y + 4);
@@ -322,7 +318,6 @@ public class ModernComponents {
                     g2.drawLine(x + 2, y + 11, x + 5, y + 14);
                 }
                 case REPORTS -> {
-                    // Ascending bar chart
                     g2.fillRect(x, y + 10, 3, 5);
                     g2.fillRect(x + 5, y + 5, 3, 10);
                     g2.fillRect(x + 10, y + 1, 3, 14);
@@ -399,7 +394,6 @@ public class ModernComponents {
                 int w = getWidth();
                 int h = getHeight();
 
-                // Draw pill background
                 Color bg = getBackground();
                 if (bg != null) {
                     g2.setColor(bg);
@@ -571,11 +565,9 @@ public class ModernComponents {
             int w = getWidth() - 1;
             int h = getHeight() - 1;
 
-            // Background fill
             g2.setColor(Color.WHITE);
             g2.fill(new RoundRectangle2D.Float(0, 0, w, h, 10, 10));
 
-            // Border
             g2.setColor(isFocused ? UITheme.ACCENT_PERIWINKLE : UITheme.CARD_BORDER);
             g2.setStroke(new BasicStroke(isFocused ? 1.8f : 1.2f));
             g2.draw(new RoundRectangle2D.Float(0.6f, 0.6f, w - 1.2f, h - 1.2f, 10, 10));
@@ -583,7 +575,6 @@ public class ModernComponents {
             g2.dispose();
             super.paintComponent(g);
 
-            // Placeholder
             if (getText().isEmpty() && !placeholder.isEmpty() && !isFocused) {
                 Graphics2D gp = (Graphics2D) g.create();
                 UITheme.enableAntiAliasing(gp);
@@ -761,7 +752,6 @@ public class ModernComponents {
         tableHeader.setDefaultRenderer(new ModernHeaderRenderer());
         tableHeader.setReorderingAllowed(false);
 
-        // Add mouse motion listener for row hover highlight
         table.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -782,7 +772,6 @@ public class ModernComponents {
             }
         });
 
-        // Set default cell renderer with 16px padding
         table.setDefaultRenderer(Object.class, new ModernTableCellRenderer());
     }
 }

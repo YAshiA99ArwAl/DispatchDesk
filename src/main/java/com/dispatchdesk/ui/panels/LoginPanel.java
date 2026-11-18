@@ -1,4 +1,9 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.panels;
+
+import com.dispatchdesk.model.UserSession;
+import com.dispatchdesk.service.DispatchBackend;
+import com.dispatchdesk.ui.components.ModernComponents;
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +23,7 @@ public class LoginPanel extends JPanel {
     }
 
     private Mode currentMode = Mode.SIGN_IN;
-    private final Consumer<DispatchBackend.UserSession> onLoginSuccess;
+    private final Consumer<UserSession> onLoginSuccess;
 
     // Sign In Fields
     private final ModernComponents.ModernTextField signInUserField;
@@ -46,7 +51,7 @@ public class LoginPanel extends JPanel {
 
     private static final int FORM_WIDTH = 370;
 
-    public LoginPanel(Consumer<DispatchBackend.UserSession> onLoginSuccess) {
+    public LoginPanel(Consumer<UserSession> onLoginSuccess) {
         this.onLoginSuccess = onLoginSuccess;
 
         setLayout(new GridBagLayout());
@@ -192,7 +197,6 @@ public class LoginPanel extends JPanel {
         signInBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         signInBtn.addActionListener(e -> attemptSignIn());
 
-        // Helper demo pill
         JPanel demoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         demoPanel.setOpaque(false);
         styleFieldSize(demoPanel, 28);
@@ -210,7 +214,6 @@ public class LoginPanel extends JPanel {
         });
         demoPanel.add(demoBtn);
 
-        // Switch to Create ID link
         JPanel switchLinkPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
         switchLinkPanel.setOpaque(false);
         styleFieldSize(switchLinkPanel, 24);
@@ -313,11 +316,9 @@ public class LoginPanel extends JPanel {
         createIdPanel.add(Box.createVerticalStrut(8));
         createIdPanel.add(backToLoginPanel);
 
-        // Add both forms to container
         formCardContainer.add(signInPanel, "SIGN_IN");
         formCardContainer.add(createIdPanel, "CREATE_ID");
 
-        // Keyboard Enter Key Listeners
         KeyAdapter enterSignIn = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -342,7 +343,6 @@ public class LoginPanel extends JPanel {
         regPassField.addKeyListener(enterCreate);
         regConfirmPassField.addKeyListener(enterCreate);
 
-        // Assemble Central Card
         card.add(logoPanel);
         card.add(Box.createVerticalStrut(6));
         card.add(brandTitle);
@@ -544,7 +544,7 @@ public class LoginPanel extends JPanel {
             return;
         }
 
-        DispatchBackend.UserSession session = DispatchBackend.login(username, password);
+        UserSession session = DispatchBackend.login(username, password);
         if (session != null) {
             hideAlert();
             if (onLoginSuccess != null) {
@@ -593,11 +593,9 @@ public class LoginPanel extends JPanel {
             return;
         }
 
-        // Register user via DispatchBackend & SQLite
-        DispatchBackend.UserSession newSession = DispatchBackend.register(username, password, fullName, "Coordinator");
+        UserSession newSession = DispatchBackend.register(username, password, fullName, "Coordinator");
         if (newSession != null) {
             hideAlert();
-            // Auto sign-in with newly created isolated user session
             if (onLoginSuccess != null) {
                 onLoginSuccess.accept(newSession);
             }

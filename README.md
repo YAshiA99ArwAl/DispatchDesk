@@ -27,8 +27,8 @@ The user interface follows a modern SaaS design language utilizing a pastel colo
   - Session management with user profile display and immediate logout capability (clears in-memory session state on sign-out).
 
 - **🧩 Backend Service & Built-In REST API**:
-  - **`DispatchBackend.java`**: Dedicated Java backend service & repository layer connecting all UI operations cleanly to SQLite with parameterized, user-scoped queries and atomic SQL transactions.
-  - **`BackendApiServer.java`**: Built-in lightweight HTTP REST API (`http://127.0.0.1:8080/api/*`) exposing `/api/health`, `/api/auth/login`, `/api/auth/register`, `/api/dashboard`, `/api/drivers`, `/api/orders`, `/api/assignments`, and `/api/reports`.
+  - **`service/DispatchBackend.java`**: Dedicated Java backend service & repository layer connecting all UI operations cleanly to SQLite with parameterized, user-scoped queries and atomic SQL transactions.
+  - **`api/BackendApiServer.java`**: Built-in lightweight HTTP REST API (`http://127.0.0.1:8080/api/*`) exposing `/api/health`, `/api/auth/login`, `/api/auth/register`, `/api/dashboard`, `/api/drivers`, `/api/orders`, `/api/assignments`, and `/api/reports`.
 
 - **📊 Operational Dashboard**:
   - 4 key summary metrics: Total Orders, Pending Action, In Transit, Delivered.
@@ -65,6 +65,59 @@ The user interface follows a modern SaaS design language utilizing a pastel colo
 - **GUI Framework**: Java Swing & Java2D (Custom Antialiased Vector Components)
 - **Database**: SQLite 3 (via `sqlite-jdbc 3.50.3.0`)
 - **Build System**: Apache Maven
+
+---
+
+## 📁 Project Structure
+
+```text
+DispatchDesk/
+├── pom.xml
+├── README.md
+├── run.bat
+├── data/
+│   └── dispatchdesk.db
+└── src/
+    ├── main/
+    │   ├── java/com/dispatchdesk/
+    │   │   ├── Main.java                            # Application bootstrap & entry point
+    │   │   ├── api/
+    │   │   │   └── BackendApiServer.java            # Embedded JDK HttpServer REST API
+    │   │   ├── db/
+    │   │   │   └── Database.java                    # SQLite connection & schema migrations
+    │   │   ├── model/
+    │   │   │   ├── AreaStat.java                    # Area fulfillment statistics DTO
+    │   │   │   ├── AssignmentRecord.java            # Assignment record DTO
+    │   │   │   ├── AssignmentResult.java            # Smart-assign response DTO
+    │   │   │   ├── DashboardStats.java              # Dashboard KPI counts DTO
+    │   │   │   ├── DriverRecord.java                # Driver record DTO
+    │   │   │   ├── OrderRecord.java                 # Order record DTO
+    │   │   │   ├── ReportSummary.java               # Reports summary DTO
+    │   │   │   └── UserSession.java                 # Authenticated user session DTO
+    │   │   ├── service/
+    │   │   │   └── DispatchBackend.java             # Business logic & user-scoped data access
+    │   │   └── ui/
+    │   │       ├── MainFrame.java                   # Main Swing window & navigation shell
+    │   │       ├── theme/
+    │   │       │   └── UITheme.java                 # Design tokens, colors & fonts
+    │   │       ├── components/
+    │   │       │   ├── DashboardAnalyticsPanel.java # Delivery pipeline & fleet overview widget
+    │   │       │   ├── DashboardStatCard.java       # Reusable KPI metric card
+    │   │       │   ├── ModernComponents.java        # Custom buttons, cards, inputs & tables
+    │   │       │   └── ReportsAnalyticsChart.java   # Area bar chart & success ratio gauge
+    │   │       ├── dialogs/
+    │   │       │   └── DetailsDialogs.java          # Order & assignment inspection dialogs
+    │   │       └── panels/
+    │   │           ├── AssignmentsPanel.java        # Delivery assignments view
+    │   │           ├── DashboardPanel.java          # Operational dashboard view
+    │   │           ├── DriversPanel.java            # Drivers directory view
+    │   │           ├── LoginPanel.java              # Sign In & Create ID view
+    │   │           ├── OrdersPanel.java             # Orders management view
+    │   │           └── ReportsPanel.java            # Reports & analytics view
+    │   └── resources/
+    └── test/
+        └── java/com/dispatchdesk/
+```
 
 ---
 

@@ -1,4 +1,7 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.dialogs;
+
+import com.dispatchdesk.ui.components.ModernComponents;
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +10,7 @@ import java.awt.geom.RoundRectangle2D;
 public class DetailsDialogs {
 
     // ==========================================
-    // 1. ORDER DETAILS POPUP (Inspired by Reference Design 3)
+    // 1. ORDER DETAILS POPUP
     // ==========================================
     public static void showOrderDetails(Frame parent, int orderId, String customer, String address,
                                         String area, String date, String timeSlot, String status,
@@ -29,7 +32,6 @@ public class DetailsDialogs {
         JPanel titleBlock = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         titleBlock.setOpaque(false);
 
-        // Avatar circle
         JComponent avatar = new JComponent() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -72,7 +74,6 @@ public class DetailsDialogs {
         titleBlock.add(avatar);
         titleBlock.add(textGroup);
 
-        // Status badge on top right
         JLabel badge = createStatusBadge(status);
 
         header.add(titleBlock, BorderLayout.WEST);

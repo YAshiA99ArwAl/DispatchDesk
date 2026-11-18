@@ -1,4 +1,6 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.components;
+
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;

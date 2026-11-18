@@ -1,11 +1,11 @@
-package com.dispatchdesk;
+package com.dispatchdesk.db;
 
 import java.io.File;
 import java.sql.*;
 
 /**
  * Core SQLite Database connection manager and automatic schema migration layer.
- * Connects DispatchDesk's backend services to the persistent dispatchdesk.db SQLite database
+ * Connects DispatchDesk's backend services to the persistent data/dispatchdesk.db SQLite database
  * with multi-user isolation via user_id foreign keys.
  */
 public class Database {
@@ -21,14 +21,21 @@ public class Database {
             return resolvedUrl;
         }
 
+        File dataDb = new File("data", "dispatchdesk.db");
         File localDb = new File("dispatchdesk.db");
         File nestedDb = new File("DispatchDesk", "dispatchdesk.db");
-        if (localDb.exists()) {
+        if (dataDb.exists()) {
+            resolvedUrl = "jdbc:sqlite:" + dataDb.getAbsolutePath();
+        } else if (localDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + localDb.getAbsolutePath();
         } else if (nestedDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + nestedDb.getAbsolutePath();
         } else {
-            resolvedUrl = "jdbc:sqlite:" + localDb.getAbsolutePath();
+            File dataDir = dataDb.getParentFile();
+            if (dataDir != null && !dataDir.exists()) {
+                dataDir.mkdirs();
+            }
+            resolvedUrl = "jdbc:sqlite:" + dataDb.getAbsolutePath();
         }
         return resolvedUrl;
     }

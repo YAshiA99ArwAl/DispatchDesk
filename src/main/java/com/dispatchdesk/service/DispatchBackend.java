@@ -1,4 +1,7 @@
-package com.dispatchdesk;
+package com.dispatchdesk.service;
+
+import com.dispatchdesk.db.Database;
+import com.dispatchdesk.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,90 +13,6 @@ import java.util.List;
  * with strict per-user data isolation (every query is scoped by user_id).
  */
 public class DispatchBackend {
-
-    // ====================================================
-    // BACKEND DATA MODELS (DTOs)
-    // ====================================================
-
-    public static class UserSession {
-        public final int userId;
-        public final String username;
-        public final String fullName;
-        public final String role;
-
-        public UserSession(int userId, String username, String fullName, String role) {
-            this.userId = userId;
-            this.username = username;
-            this.fullName = fullName;
-            this.role = role;
-        }
-    }
-
-    public static class DriverRecord {
-        public int driverId;
-        public int userId;
-        public String name;
-        public String phone;
-        public String area;
-        public boolean available;
-    }
-
-    public static class OrderRecord {
-        public int orderId;
-        public int userId;
-        public String customer;
-        public String address;
-        public String area;
-        public String deliveryDate;
-        public String timeSlot;
-        public String status;
-        public String failureReason;
-    }
-
-    public static class AssignmentRecord {
-        public int assignmentId;
-        public int orderId;
-        public int userId;
-        public String customer;
-        public String driver;
-        public String area;
-        public String status;
-        public String assignedAt;
-        public String failureReason;
-    }
-
-    public static class AssignmentResult {
-        public final boolean success;
-        public final int driverId;
-        public final String driverName;
-        public final String message;
-
-        public AssignmentResult(boolean success, int driverId, String driverName, String message) {
-            this.success = success;
-            this.driverId = driverId;
-            this.driverName = driverName;
-            this.message = message;
-        }
-    }
-
-    public static class DashboardStats {
-        public int totalOrders;
-        public int pendingOrders;
-        public int deliveredOrders;
-        public int failedOrders;
-        public int assignedOrders;
-        public int inProgressOrders;
-        public int totalDrivers;
-        public int availableDrivers;
-    }
-
-    public static class ReportSummary {
-        public int totalOrders;
-        public int deliveredOrders;
-        public int failedOrders;
-        public double successRate;
-        public List<ReportsAnalyticsChart.AreaStat> areaStats = new ArrayList<>();
-    }
 
     // ====================================================
     // HEALTH CHECK
@@ -609,7 +528,7 @@ public class DispatchBackend {
                 ps.setInt(1, userId);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        summary.areaStats.add(new ReportsAnalyticsChart.AreaStat(
+                        summary.areaStats.add(new AreaStat(
                                 rs.getString("area"),
                                 rs.getInt("total"),
                                 rs.getInt("delivered"),

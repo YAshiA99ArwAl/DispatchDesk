@@ -1,4 +1,7 @@
-package com.dispatchdesk;
+package com.dispatchdesk.ui.components;
+
+import com.dispatchdesk.model.AreaStat;
+import com.dispatchdesk.ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,20 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportsAnalyticsChart extends ModernComponents.RoundedCard {
-
-    public static class AreaStat {
-        public final String area;
-        public final int total;
-        public final int delivered;
-        public final int failed;
-
-        public AreaStat(String area, int total, int delivered, int failed) {
-            this.area = area;
-            this.total = total;
-            this.delivered = delivered;
-            this.failed = failed;
-        }
-    }
 
     private final List<AreaStat> areaStats = new ArrayList<>();
     private double overallSuccessRate = 0.0;
@@ -83,7 +72,6 @@ public class ReportsAnalyticsChart extends ModernComponents.RoundedCard {
         int plotH = totalH - 96;
         int baselineY = plotY + plotH;
 
-        // Horizontal dashed guideline
         g2.setColor(new Color(244, 240, 252));
         g2.drawLine(plotX, baselineY, plotX + plotW, baselineY);
         g2.drawLine(plotX, plotY + (plotH / 2), plotX + plotW, plotY + (plotH / 2));
@@ -103,16 +91,10 @@ public class ReportsAnalyticsChart extends ModernComponents.RoundedCard {
                 int groupCenterX = plotX + (i * groupSlotW) + (groupSlotW / 2);
                 int startBarX = groupCenterX - ((barW * 3 + 4) / 2);
 
-                // Bar 1: Total Orders (#424874)
                 drawBar(g2, startBarX, baselineY, barW, plotH, as.total, maxVal, UITheme.PRIMARY_DARK);
-
-                // Bar 2: Delivered (#A6B1E1)
                 drawBar(g2, startBarX + barW + 2, baselineY, barW, plotH, as.delivered, maxVal, UITheme.ACCENT_PERIWINKLE);
-
-                // Bar 3: Failed (#DCD6F7)
                 drawBar(g2, startBarX + (barW * 2) + 4, baselineY, barW, plotH, as.failed, maxVal, UITheme.ACCENT_LAVENDER);
 
-                // Area Name Label below baseline
                 g2.setFont(new Font("Segoe UI", Font.BOLD, 11));
                 g2.setColor(UITheme.TEXT_SECONDARY);
                 FontMetrics fm = g2.getFontMetrics();
@@ -141,26 +123,22 @@ public class ReportsAnalyticsChart extends ModernComponents.RoundedCard {
         FontMetrics fmT = g2.getFontMetrics();
         g2.drawString(ringTitle, ringCenterX - (fmT.stringWidth(ringTitle) / 2), 28);
 
-        // Ring track (Background full circle in #DCD6F7)
         g2.setColor(UITheme.ACCENT_LAVENDER);
         g2.setStroke(new BasicStroke(ringThickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2.drawOval(ringCenterX - ringRadius, ringCenterY - ringRadius, ringDiameter, ringDiameter);
 
-        // Ring progress arc (#424874)
         if (overallSuccessRate > 0) {
             g2.setColor(UITheme.PRIMARY_DARK);
             double extent = -(overallSuccessRate / 100.0) * 360.0;
             g2.draw(new Arc2D.Double(ringCenterX - ringRadius, ringCenterY - ringRadius, ringDiameter, ringDiameter, 90, extent, Arc2D.OPEN));
         }
 
-        // Center Percentage Text
         g2.setFont(new Font("Segoe UI", Font.BOLD, 20));
         g2.setColor(UITheme.PRIMARY_DARK);
         String pctStr = String.format("%.1f%%", overallSuccessRate);
         FontMetrics fmPct = g2.getFontMetrics();
         g2.drawString(pctStr, ringCenterX - (fmPct.stringWidth(pctStr) / 2), ringCenterY + (fmPct.getAscent() / 2) - 2);
 
-        // Subtitle below ring
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         g2.setColor(UITheme.TEXT_MUTED);
         String sub = totalOrders + " Total · " + deliveredOrders + " Delivered";
@@ -179,7 +157,6 @@ public class ReportsAnalyticsChart extends ModernComponents.RoundedCard {
         g2.setColor(c);
         g2.fill(new RoundRectangle2D.Float(x, y, w, barH, 4, 4));
 
-        // Value text above bar
         g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
         g2.setColor(UITheme.PRIMARY_DARK);
         FontMetrics fm = g2.getFontMetrics();
