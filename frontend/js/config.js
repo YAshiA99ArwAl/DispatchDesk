@@ -5,7 +5,7 @@
  */
 
 const STORAGE_KEY = 'dispatchdesk_api_base';
-const DEFAULT_API_BASE = 'http://localhost:8080';
+const DEFAULT_API_BASE = 'https://dispatchdesk-backend.onrender.com';
 
 export function getApiBaseUrl() {
   const params = new URLSearchParams(window.location.search);

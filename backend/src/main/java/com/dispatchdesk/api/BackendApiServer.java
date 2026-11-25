@@ -610,8 +610,16 @@ public class BackendApiServer {
 
     private static void sendJson(HttpExchange ex, int status, String json) throws IOException {
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
+
         ex.getResponseHeaders().set("Content-Type", "application/json; charset=UTF-8");
+        ex.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        ex.getResponseHeaders().set("Access-Control-Allow-Methods",
+                "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+        ex.getResponseHeaders().set("Access-Control-Allow-Headers",
+                "Content-Type, X-User-Id, Authorization");
+
         ex.sendResponseHeaders(status, bytes.length);
+
         try (OutputStream os = ex.getResponseBody()) {
             os.write(bytes);
         }
