@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DispatchDesk — Smart Delivery &amp; Fleet Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- =========================================================
+       AUTHENTICATION VIEW (SPLIT HERO + CLEAN FORM)
+       ========================================================= -->
+  <section id="auth-view" class="auth-shell">
+    <div class="auth-split-container">
+      <!-- Left Showcase Panel -->
+      <div class="auth-hero-panel">
+        <div class="hero-top">
+          <div class="hero-brand-row">
+            <div class="brand-badge brand-badge-glass">D</div>
+            <div>
+              <div class="hero-brand-name">DispatchDesk</div>
+              <div class="hero-brand-sub">LOGISTICS &amp; FLEET ENGINE</div>
+            </div>
+          </div>
+
+          <h1 class="hero-headline">
+            Intelligent Local Delivery &amp; Fleet Coordination
+          </h1>
+          <p class="hero-copy">
+            Streamline order intake, balance driver workloads automatically by zone, and track real-time fulfillment analytics from one unified command center.
+          </p>
+        </div>
+
+        <div class="hero-features">
+          <div class="hero-feature-item">
+            <span class="hero-feature-icon">⚡</span>
+            <div>
+              <div class="hero-feature-title">Smart Workload Balancing</div>
+              <div class="hero-feature-desc">Transactional auto-dispatch picks the least-busy available driver in the target area.</div>
+            </div>
+          </div>
+          <div class="hero-feature-item">
+            <span class="hero-feature-icon">🔒</span>
+            <div>
+              <div class="hero-feature-title">Per-Coordinator Isolation</div>
+              <div class="hero-feature-desc">Strict SQLite workspace scoping ensures every coordinator manages private fleet data.</div>
+            </div>
+          </div>
+          <div class="hero-feature-item">
+            <span class="hero-feature-icon">📊</span>
+            <div>
+              <div class="hero-feature-title">Live Fulfillment Telemetry</div>
+              <div class="hero-feature-desc">Interactive pipeline gauges, zone-wise comparisons, and audit-ready delivery logs.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-footer-pill">
+          <span>Java 21 REST Backend</span>
+          <span>•</span>
+          <span>SQLite 3 ACID Persistence</span>
+        </div>
+      </div>
+
+      <!-- Right Auth Form Card -->
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <h2 class="auth-card-title">Coordinator Access</h2>
+          <p id="auth-subtitle" class="auth-subtitle">Sign in to access your dispatch operations</p>
+        </div>
+
+        <!-- Segmented Switcher -->
+        <div class="segmented-control" role="tablist" aria-label="Authentication Mode">
+          <button type="button" id="tab-signin" class="segment-btn active" role="tab" aria-selected="true">Sign In</button>
+          <button type="button" id="tab-register" class="segment-btn" role="tab" aria-selected="false">Create ID</button>
+        </div>
+
+        <!-- Alert Banner -->
+        <div id="auth-alert" class="alert-banner hidden" role="alert"></div>
+
+        <!-- Sign In Form -->
+        <form id="signin-form" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="signin-username">Username or Coordinator ID</label>
+            <input id="signin-username" type="text" placeholder="Enter username (e.g. admin)" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="signin-password">Password</label>
+            <div class="password-row">
+              <input id="signin-password" type="password" placeholder="Enter password (e.g. admin123)" autocomplete="current-password" required />
+              <button type="button" class="btn-toggle-pass" data-target="signin-password">Show</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-full">Sign In to Workspace →</button>
+
+          <button type="button" id="demo-fill-btn" class="demo-pill">
+            ✨ Quick Demo Credentials: <strong>admin / admin123</strong>
+          </button>
+
+          <p class="auth-switch-hint">
+            New coordinator?
+            <button type="button" id="go-register-link" class="link-btn">Create an ID here</button>
+          </p>
+        </form>
+
+        <!-- Create ID Form -->
+        <form id="register-form" class="auth-form hidden" novalidate>
+          <div class="form-group">
+            <label for="reg-fullname">Full Name</label>
+            <input id="reg-fullname" type="text" placeholder="e.g. Alex Morgan" autocomplete="name" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-username">Choose Coordinator ID / Username</label>
+            <input id="reg-username" type="text" placeholder="e.g. alex" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Create Password</label>
+            <div class="password-row">
+              <input id="reg-password" type="password" placeholder="At least 4 characters" autocomplete="new-password" required />
+              <button type="button" class="btn-toggle-pass" data-target="reg-password">Show</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm">Confirm Password</label>
+            <input id="reg-confirm" type="password" placeholder="Re-enter password" autocomplete="new-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-full">Create ID &amp; Enter Workspace →</button>
+
+          <p class="auth-switch-hint">
+            Already have an ID?
+            <button type="button" id="go-signin-link" class="link-btn">Sign In here</button>
+          </p>
+        </form>
+
+        <!-- Backend Server Status Bar -->
+        <div class="auth-backend-bar">
+          <div id="auth-backend-status" class="status-pill status-checking">
+            <span class="dot"></span>
+            <span class="status-text">Checking Java Backend...</span>
+          </div>
+          <button type="button" id="open-api-config-auth" class="btn-icon-text" title="Configure Java Backend API URL">
+            ⚙ API URL
+          </button>
+        </div>
+
+        <div id="offline-preview-box" class="offline-hint hidden">
+          <p>Java backend not reachable at <code id="offline-api-url"></code>. Start <code>backend/run-backend.bat</code> or configure a live API URL.</p>
+          <button type="button" id="enter-demo-preview-btn" class="btn btn-outline btn-sm btn-full">
+            Open Offline UI Preview (Sample Data)
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       MAIN WORKSPACE SHELL (AUTHENTICATED)
+       ========================================================= -->
+  <div id="app-view" class="app-shell hidden">
+    <div id="sidebar-backdrop" class="sidebar-backdrop hidden"></div>
+
+    <!-- Left Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <div class="brand-badge">D</div>
+          <div>
+            <div class="brand-name">DispatchDesk</div>
+            <div class="brand-sub">DISPATCH PORTAL</div>
+          </div>
+        </div>
+
+        <div class="nav-section-label">OPERATIONS</div>
+        <nav class="nav-list" aria-label="Primary Navigation">
+          <button type="button" class="nav-item active" data-page="dashboard">
+            <svg viewBox="0 0 20 20" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="6.5" height="6.5" rx="1.6" fill="currentColor" stroke="none"></rect>
+              <rect x="11.5" y="2" width="6.5" height="6.5" rx="1.6" fill="currentColor" stroke="none"></rect>
+              <rect x="2" y="11.5" width="6.5" height="6.5" rx="1.6" fill="currentColor" stroke="none"></rect>
+              <rect x="11.5" y="11.5" width="6.5" height="6.5" rx="1.6" fill="currentColor" stroke="none"></rect>
+            </svg>
+            <span class="nav-label">Dashboard</span>
+          </button>
+
+          <button type="button" class="nav-item" data-page="orders">
+            <svg viewBox="0 0 20 20" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2.5" y="3.5" width="15" height="13" rx="2"></rect>
+              <line x1="2.5" y1="8" x2="17.5" y2="8"></line>
+              <line x1="10" y1="8" x2="10" y2="16.5"></line>
+            </svg>
+            <span class="nav-label">Orders</span>
+            <span id="nav-badge-pending" class="nav-badge hidden">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-page="drivers">
+            <svg viewBox="0 0 20 20" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="10" cy="6.5" r="3.5"></circle>
+              <path d="M3.5 17c0-3.2 2.9-5.2 6.5-5.2s6.5 2 6.5 5.2"></path>
+            </svg>
+            <span class="nav-label">Drivers</span>
+            <span id="nav-badge-drivers" class="nav-badge nav-badge-subtle">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-page="assignments">
+            <svg viewBox="0 0 20 20" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M3 6.5h12.5m0 0-3-3m3 3-3 3"></path>
+              <path d="M17 13.5H4.5m0 0 3-3m-3 3 3 3"></path>
+            </svg>
+            <span class="nav-label">Assignments</span>
+            <span id="nav-badge-active" class="nav-badge nav-badge-subtle">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-page="reports">
+            <svg viewBox="0 0 20 20" class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="11" width="3.2" height="6" rx="1" fill="currentColor" stroke="none"></rect>
+              <rect x="8.4" y="7" width="3.2" height="10" rx="1" fill="currentColor" stroke="none"></rect>
+              <rect x="13.8" y="3" width="3.2" height="14" rx="1" fill="currentColor" stroke="none"></rect>
+            </svg>
+            <span class="nav-label">Reports</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- User Profile & Logout Footer -->
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div id="user-avatar" class="avatar-circle">DA</div>
+          <div class="user-meta">
+            <div id="user-fullname" class="user-name">Dispatch Admin</div>
+            <div id="user-role" class="user-role">@admin</div>
+          </div>
+        </div>
+        <button type="button" id="logout-btn" class="btn btn-outline btn-sm">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle Menu">☰</button>
+          <div>
+            <h2 id="page-title" class="page-title">Dashboard</h2>
+            <p id="topbar-date" class="topbar-date"></p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button type="button" id="topbar-new-order-btn" class="btn btn-primary btn-sm">+ New Order</button>
+          <button type="button" id="header-backend-pill" class="status-pill status-connected" title="Click to configure Java Backend URL">
+            <span class="dot"></span>
+            <span id="header-backend-text">Backend Connected</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content">
+        <!-- ================= PAGE 1: DASHBOARD ================= -->
+        <section id="page-dashboard" class="page-section active">
+          <!-- Executive Welcome Hero Banner -->
+          <div class="welcome-banner">
+            <div class="welcome-copy">
+              <span class="welcome-eyebrow">LIVE DISPATCH COMMAND</span>
+              <h3 id="welcome-greeting" class="welcome-title">Welcome back, Dispatch Admin</h3>
+              <p id="dashboard-subtitle" class="welcome-sub">
+                Essential delivery metrics and fleet readiness summary
+              </p>
+            </div>
+            <div class="welcome-actions">
+              <button type="button" id="hero-add-driver-btn" class="btn btn-glass">+ Add Driver</button>
+              <button type="button" id="refresh-dashboard-btn" class="btn btn-white">↻ Sync Data</button>
+            </div>
+          </div>
+
+          <!-- 4 Primary KPI Cards -->
+          <div class="kpi-grid">
+            <article class="kpi-card kpi-accent-navy">
+              <div class="kpi-top">
+                <span class="kpi-label">Total Orders</span>
+                <span class="kpi-icon kpi-icon-lavender">📦</span>
+              </div>
+              <div id="kpi-total-orders" class="kpi-value">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-sub">All registered orders</span>
+                <span id="kpi-total-share" class="kpi-chip">100%</span>
+              </div>
+            </article>
+
+            <article class="kpi-card kpi-accent-amber">
+              <div class="kpi-top">
+                <span class="kpi-label">Pending Action</span>
+                <span class="kpi-icon kpi-icon-amber">⏳</span>
+              </div>
+              <div id="kpi-pending-orders" class="kpi-value">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-sub">Awaiting driver dispatch</span>
+                <span id="kpi-pending-share" class="kpi-chip chip-amber">0%</span>
+              </div>
+            </article>
+
+            <article class="kpi-card kpi-accent-periwinkle">
+              <div class="kpi-top">
+                <span class="kpi-label">In Transit</span>
+                <span class="kpi-icon kpi-icon-periwinkle">🚚</span>
+              </div>
+              <div id="kpi-intransit-orders" class="kpi-value">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-sub">Assigned &amp; active routes</span>
+                <span id="kpi-transit-share" class="kpi-chip">0%</span>
+              </div>
+            </article>
+
+            <article class="kpi-card kpi-accent-green">
+              <div class="kpi-top">
+                <span class="kpi-label">Delivered</span>
+                <span class="kpi-icon kpi-icon-green">✓</span>
+              </div>
+              <div id="kpi-delivered-orders" class="kpi-value">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-sub">Completed fulfillment</span>
+                <span id="kpi-delivered-share" class="kpi-chip chip-green">0%</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- 2-Column Executive Dashboard Grid -->
+          <div class="dashboard-split-grid">
+            <!-- Left: Delivery Pipeline & Fleet Overview -->
+            <article class="card pipeline-card">
+              <div class="pipeline-header">
+                <div>
+                  <h4 class="card-title">Delivery Pipeline &amp; Fleet Overview</h4>
+                  <p class="card-subtitle">Real-time fulfillment progress across active delivery cycles</p>
+                </div>
+                <span class="live-sync-pill">● Live Dispatch Sync</span>
+              </div>
+
+              <div id="pipeline-bar" class="pipeline-bar" aria-label="Delivery Pipeline Distribution"></div>
+              <div id="pipeline-stages" class="stage-grid"></div>
+
+              <hr class="card-divider" />
+
+              <div class="fleet-header">
+                <h4 class="fleet-title">Fleet Capacity &amp; Driver Allocation</h4>
+                <span id="fleet-capacity-label" class="fleet-pct">0% Available (0 of 0 on standby)</span>
+              </div>
+
+              <div class="fleet-bar-track">
+                <div id="fleet-bar-fill" class="fleet-bar-fill" style="width: 0%"></div>
+              </div>
+
+              <div class="fleet-pills">
+                <span class="fleet-legend"><span class="legend-dot dot-green"></span><span id="fleet-standby-text">Standby: 0</span></span>
+                <span class="fleet-legend"><span class="legend-dot dot-periwinkle"></span><span id="fleet-busy-text">On Route: 0</span></span>
+                <span class="fleet-legend"><span class="legend-dot dot-navy"></span><span id="fleet-total-text">Total Fleet: 0</span></span>
+              </div>
+
+              <hr class="card-divider" />
+
+              <div class="readiness-chips">
+                <span class="readiness-chip"><span class="check-mark">✓</span> SQLite ACID Storage</span>
+                <span class="readiness-chip"><span class="check-mark">✓</span> Lowest-Workload Smart Assign</span>
+                <span class="readiness-chip"><span class="check-mark">✓</span> User-Scoped Isolation</span>
+              </div>
+            </article>
+
+            <!-- Right: Actionable Dispatch Queue (Live from Orders) -->
+            <article class="card activity-card">
+              <div class="activity-header">
+                <div>
+                  <h4 class="card-title">Priority Dispatch Queue</h4>
+                  <p class="card-subtitle">Pending &amp; recent orders ready for action</p>
+                </div>
+                <button type="button" id="view-all-orders-link" class="btn btn-outline btn-sm">All Orders →</button>
+              </div>
+              <div id="dashboard-activity-list" class="activity-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 2: ORDERS ================= -->
+        <section id="page-orders" class="page-section hidden">
+          <article class="card table-card">
+            <div class="toolbar">
+              <div>
+                <h3 class="card-title">Orders Management</h3>
+                <p class="card-subtitle">Filter orders by status, edit pending details, or run Smart Assign in one click</p>
+              </div>
+              <div class="toolbar-actions">
+                <button type="button" id="add-order-btn" class="btn btn-primary">+ Add Order</button>
+                <button type="button" id="refresh-orders-btn" class="btn btn-outline">↻ Refresh</button>
+              </div>
+            </div>
+
+            <!-- Filter Pills + Search -->
+            <div class="filter-bar">
+              <div id="order-status-pills" class="status-pill-tabs" role="tablist" aria-label="Filter orders by status"></div>
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input id="order-search-input" type="text" placeholder="Search customer, area, address, or date..." />
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Delivery Area</th>
+                    <th>Delivery Schedule</th>
+                    <th>Status</th>
+                    <th class="text-right">Quick Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-tbody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- ================= PAGE 3: DRIVERS ================= -->
+        <section id="page-drivers" class="page-section hidden">
+          <div class="mini-stats-row">
+            <div class="mini-stat-pill">
+              <span class="mini-stat-label">Total Fleet</span>
+              <strong id="drv-stat-total">0</strong>
+            </div>
+            <div class="mini-stat-pill mini-stat-green">
+              <span class="mini-stat-label">Available Now</span>
+              <strong id="drv-stat-available">0</strong>
+            </div>
+            <div class="mini-stat-pill mini-stat-muted">
+              <span class="mini-stat-label">Busy / Offline</span>
+              <strong id="drv-stat-busy">0</strong>
+            </div>
+          </div>
+
+          <article class="card table-card">
+            <div class="toolbar">
+              <div>
+                <h3 class="card-title">Active Fleet Drivers</h3>
+                <p class="card-subtitle">Toggle driver availability instantly with the live switch or register new drivers</p>
+              </div>
+              <div class="toolbar-actions">
+                <button type="button" id="add-driver-btn" class="btn btn-primary">+ Add Driver</button>
+                <button type="button" id="refresh-drivers-btn" class="btn btn-outline">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Driver ID</th>
+                    <th>Driver Name</th>
+                    <th>Phone Number</th>
+                    <th>Coverage Area</th>
+                    <th>Active Load</th>
+                    <th>Status</th>
+                    <th class="text-right">Availability</th>
+                  </tr>
+                </thead>
+                <tbody id="drivers-tbody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- ================= PAGE 4: ASSIGNMENTS ================= -->
+        <section id="page-assignments" class="page-section hidden">
+          <article class="card table-card">
+            <div class="toolbar">
+              <div>
+                <h3 class="card-title">Driver Assignments &amp; Status</h3>
+                <p class="card-subtitle">Track order-to-driver dispatch records and advance delivery lifecycle states</p>
+              </div>
+              <div class="toolbar-actions">
+                <button type="button" id="refresh-assignments-btn" class="btn btn-outline">↻ Refresh Assignments</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Assigned Driver</th>
+                    <th>Delivery Area</th>
+                    <th>Status</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="assignments-tbody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- ================= PAGE 5: REPORTS ================= -->
+        <section id="page-reports" class="page-section hidden">
+          <div class="kpi-grid">
+            <article class="kpi-card kpi-accent-navy">
+              <div class="kpi-top">
+                <span class="kpi-label">Total Tracked</span>
+                <span class="kpi-icon kpi-icon-lavender">📦</span>
+              </div>
+              <div id="report-total-orders" class="kpi-value">0</div>
+              <div class="kpi-sub">All-time volume</div>
+            </article>
+
+            <article class="kpi-card kpi-accent-green">
+              <div class="kpi-top">
+                <span class="kpi-label">Delivered</span>
+                <span class="kpi-icon kpi-icon-green">✓</span>
+              </div>
+              <div id="report-delivered-orders" class="kpi-value">0</div>
+              <div class="kpi-sub">Fulfilled orders</div>
+            </article>
+
+            <article class="kpi-card kpi-accent-red">
+              <div class="kpi-top">
+                <span class="kpi-label">Failed</span>
+                <span class="kpi-icon kpi-icon-red">✕</span>
+              </div>
+              <div id="report-failed-orders" class="kpi-value">0</div>
+              <div class="kpi-sub">Delivery issues</div>
+            </article>
+
+            <article class="kpi-card kpi-accent-periwinkle">
+              <div class="kpi-top">
+                <span class="kpi-label">Success Rate</span>
+                <span class="kpi-icon kpi-icon-periwinkle">📈</span>
+              </div>
+              <div id="report-success-rate" class="kpi-value">0.0%</div>
+              <div class="kpi-sub">Fulfillment ratio</div>
+            </article>
+          </div>
+
+          <div class="reports-visual-grid">
+            <article class="card chart-card">
+              <div class="chart-header">
+                <h4 class="card-title">Area Fulfillment Comparison</h4>
+                <div class="chart-legend">
+                  <span><i class="swatch swatch-navy"></i> Total</span>
+                  <span><i class="swatch swatch-periwinkle"></i> Delivered</span>
+                  <span><i class="swatch swatch-lavender"></i> Failed</span>
+                </div>
+              </div>
+              <div id="area-bar-chart" class="chart-body"></div>
+            </article>
+
+            <article class="card gauge-card">
+              <h4 class="card-title">Success Ratio</h4>
+              <div id="success-ring-gauge" class="gauge-body"></div>
+            </article>
+          </div>
+
+          <article class="card table-card">
+            <div class="toolbar">
+              <div>
+                <h4 class="card-title">Area-wise Performance Breakdown</h4>
+                <p class="card-subtitle">Delivery completion summary grouped by coverage area</p>
+              </div>
+              <div class="toolbar-actions">
+                <button type="button" id="export-csv-btn" class="btn btn-secondary">⬇ Export CSV</button>
+                <button type="button" id="refresh-reports-btn" class="btn btn-primary">↻ Refresh Reports</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Delivery Area</th>
+                    <th>Total Orders</th>
+                    <th>Delivered</th>
+                    <th>Failed</th>
+                    <th>Success Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-area-tbody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       REUSABLE MODAL DIALOG
+       ========================================================= -->
+  <div id="modal-backdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title" class="modal-title">Modal</h3>
+        <button type="button" id="modal-close-btn" class="modal-close" aria-label="Close">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

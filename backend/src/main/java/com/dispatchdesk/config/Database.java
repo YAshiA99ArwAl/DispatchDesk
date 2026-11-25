@@ -1,4 +1,4 @@
-package com.dispatchdesk;
+package com.dispatchdesk.config;
 
 import java.io.File;
 import java.sql.*;
@@ -16,15 +16,23 @@ public class Database {
             return resolvedUrl;
         }
         String override = System.getProperty("dispatchdesk.db");
+        if (override == null || override.isBlank()) {
+            override = System.getenv("DISPATCHDESK_DB");
+        }
         if (override != null && !override.isBlank()) {
             resolvedUrl = "jdbc:sqlite:" + override.trim();
             return resolvedUrl;
         }
 
         File localDb = new File("dispatchdesk.db");
+        File backendDb = new File("backend", "dispatchdesk.db");
         File nestedDb = new File("DispatchDesk", "dispatchdesk.db");
+        File backendDir = new File("backend");
+
         if (localDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + localDb.getAbsolutePath();
+        } else if (backendDb.exists() || backendDir.isDirectory()) {
+            resolvedUrl = "jdbc:sqlite:" + backendDb.getAbsolutePath();
         } else if (nestedDb.exists()) {
             resolvedUrl = "jdbc:sqlite:" + nestedDb.getAbsolutePath();
         } else {
